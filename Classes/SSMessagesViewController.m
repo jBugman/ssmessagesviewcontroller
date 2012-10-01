@@ -49,6 +49,8 @@ CGFloat kInputHeight = 40.0f;
 	_tableView.dataSource = self;
 	_tableView.delegate = self;
 	_tableView.separatorColor = self.view.backgroundColor;
+	_tableView.contentInset = UIEdgeInsetsMake(4.0f, 0.0f, 0.0f, 0.0f);
+	_tableView.scrollIndicatorInsets = _tableView.contentInset;
 	[self.view addSubview:_tableView];
 	
 	// Input
@@ -83,6 +85,22 @@ CGFloat kInputHeight = 40.0f;
 	
 	self.leftBackgroundImage = [[UIImage imageNamed:@"SSMessageTableViewCellBackgroundClear.png"] stretchableImageWithLeftCapWidth:24 topCapHeight:14];
 	self.rightBackgroundImage = [[UIImage imageNamed:@"SSMessageTableViewCellBackgroundGreen.png"] stretchableImageWithLeftCapWidth:17 topCapHeight:14];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(handleWillShowKeyboardNotification:)
+												 name:UIKeyboardWillShowNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(handleWillHideKeyboardNotification:)
+												 name:UIKeyboardWillHideNotification object:nil];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 }
 
 
@@ -151,26 +169,36 @@ CGFloat kInputHeight = 40.0f;
 }
 
 
-#pragma mark UITextFieldDelegate
+#pragma mark 
 
-- (void)textFieldDidBeginEditing:(UITextField *)textField {
+- (void)handleWillShowKeyboardNotification:(NSNotification *)notif
+{
+	NSDictionary *info = [notif userInfo];
+	CGSize keyboardSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+	UIViewAnimationCurve animationCurve = [[info objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
+	double animationDuration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+	
 	[UIView beginAnimations:@"beginEditing" context:_inputBackgroundView];
-	[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-	[UIView setAnimationDuration:0.3f];
-	_tableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 166.0f, 0.0f);
+	[UIView setAnimationCurve:animationCurve];
+	[UIView setAnimationDuration:animationDuration];
+	_tableView.contentInset = UIEdgeInsetsMake(4.0f, 0.0f, 166.0f, 0.0f);
 	_tableView.scrollIndicatorInsets = _tableView.contentInset;
-	_inputBackgroundView.frame = CGRectMake(0.0f, 160.0f, self.view.frame.size.width, kInputHeight);
+	_inputBackgroundView.frame = CGRectMake(0.0f, self.view.frame.size.height - keyboardSize.height + 10.f, self.view.frame.size.width, kInputHeight);
 	[_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
 	[UIView commitAnimations];
 }
 
-
-- (void)textFieldDidEndEditing:(UITextField *)textField {
-	[UIView beginAnimations:@"endEditing" context:_inputBackgroundView];
-	[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-	[UIView setAnimationDuration:0.3f];
-	_tableView.contentInset = UIEdgeInsetsZero;
-	_tableView.scrollIndicatorInsets = UIEdgeInsetsZero;
+- (void)handleWillHideKeyboardNotification:(NSNotification *)notif
+{
+	NSDictionary *info = [notif userInfo];
+	UIViewAnimationCurve animationCurve = [[info objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
+	double animationDuration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+	
+	[UIView beginAnimations:@"beginEditing" context:_inputBackgroundView];
+	[UIView setAnimationCurve:animationCurve];
+	[UIView setAnimationDuration:animationDuration];
+	_tableView.contentInset = UIEdgeInsetsMake(4.0f, 0.0f, 0.0f, 0.0f);
+	_tableView.scrollIndicatorInsets = _tableView.contentInset;
 	_inputBackgroundView.frame = CGRectMake(0.0f, _tableView.frame.size.height, self.view.frame.size.width, kInputHeight);
 	[_sendButton setTitleColor:[UIColor colorWithWhite:1.0f alpha:0.4f] forState:UIControlStateNormal];
 	[UIView commitAnimations];
