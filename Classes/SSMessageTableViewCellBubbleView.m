@@ -88,8 +88,8 @@ static CGFloat kMarginBottom = 2.0f;
 	//DetailLabel
 	if(_detailText) {
 		CGSize detailTextSize = [[self class] textSizeForText:_detailText withFont:kDetailFont];
-		CGFloat textX = (_messageStyle == SSMessageStyleLeft ? bubbleFrame.size.width : bubbleFrame.origin.x - detailTextSize.width);
-		CGRect detailFrame = CGRectMake(textX, textFrame.origin.y + textFrame.size.height - detailTextSize.height, detailTextSize.width, detailTextSize.height);
+		CGFloat detailTextX = (_messageStyle == SSMessageStyleLeft ? bubbleFrame.size.width : bubbleFrame.origin.x - detailTextSize.width);
+		CGRect detailFrame = CGRectMake(detailTextX, textFrame.origin.y + textFrame.size.height - detailTextSize.height, detailTextSize.width, detailTextSize.height);
 		
 		//Background
 		int detailTextPadding = 3;
