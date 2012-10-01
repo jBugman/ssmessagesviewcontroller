@@ -10,7 +10,7 @@
 
 #define kFont [UIFont systemFontOfSize:15.0]
 #define kDetailFont [UIFont systemFontOfSize:11.0]
-static UILineBreakMode kLineBreakMode = UILineBreakModeWordWrap;
+static NSLineBreakMode kLineBreakMode = NSLineBreakByWordWrapping;
 static CGFloat kMaxWidth = 223.0f; // TODO: Make dynamic
 static CGFloat kPaddingTop = 4.0f;
 static CGFloat kPaddingBottom = 8.0f;
@@ -113,7 +113,7 @@ static CGFloat kMarginBottom = 2.0f;
 
 	[[UIColor blackColor] set];
 	[bubbleImage drawInRect:bubbleFrame];
-	[_messageText drawInRect:textFrame withFont:kFont lineBreakMode:kLineBreakMode alignment:(_messageStyle == SSMessageStyleRight) ? UITextAlignmentRight : UITextAlignmentLeft];
+	[_messageText drawInRect:textFrame withFont:kFont lineBreakMode:kLineBreakMode alignment:(_messageStyle == SSMessageStyleRight) ? NSTextAlignmentRight : NSTextAlignmentLeft];
 }
 
 @end
