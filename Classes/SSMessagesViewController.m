@@ -143,22 +143,22 @@ CGFloat kInputHeight = 40.0f;
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-  static NSString *cellIdentifier = @"cellIdentifier";
+    static NSString *cellIdentifier = @"cellIdentifier";
     
 	SSMessageTableViewCell *cell = (SSMessageTableViewCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-  if (cell == nil) {
+    if (cell == nil) {
 		cell = [[[SSMessageTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier] autorelease];
 		[cell setBackgroundImage:self.leftBackgroundImage forMessageStyle:SSMessageStyleLeft];
 		[cell setBackgroundImage:self.rightBackgroundImage forMessageStyle:SSMessageStyleRight];
 	}
 	
-  cell.messageStyle = [self messageStyleForRowAtIndexPath:indexPath];
+    cell.messageStyle = [self messageStyleForRowAtIndexPath:indexPath];
 	cell.messageText = [self textForRowAtIndexPath:indexPath];
 	cell.detailText = [self detailTextForRowAtIndexPath:indexPath];
 	cell.detailTextColor = [self detailTextColorForRowAtIndexPath:indexPath];
 	cell.detailBackgroundColor = [self detailBackgroundColorForRowAtIndexPath:indexPath];
-
-  return cell;
+    
+    return cell;
 }
 
 
@@ -169,21 +169,20 @@ CGFloat kInputHeight = 40.0f;
 }
 
 
-#pragma mark 
+#pragma mark
 
 - (void)handleWillShowKeyboardNotification:(NSNotification *)notif
 {
 	NSDictionary *info = [notif userInfo];
-	CGSize keyboardSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+	CGSize keyboardSize = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
 	UIViewAnimationCurve animationCurve = [[info objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
 	double animationDuration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-	
+    
 	[UIView beginAnimations:@"beginEditing" context:_inputBackgroundView];
 	[UIView setAnimationCurve:animationCurve];
 	[UIView setAnimationDuration:animationDuration];
-	_tableView.contentInset = UIEdgeInsetsMake(4.0f, 0.0f, 166.0f, 0.0f);
-	_tableView.scrollIndicatorInsets = _tableView.contentInset;
-	_inputBackgroundView.frame = CGRectMake(0.0f, self.view.frame.size.height - keyboardSize.height + 10.f, self.view.frame.size.width, kInputHeight);
+    self.tableView.frame = CGRectMake(0.0f, 0.0f, self.view.frame.size.width, self.view.frame.size.height - keyboardSize.height - kInputHeight);
+	_inputBackgroundView.frame = CGRectMake(0.0f, self.view.frame.size.height - keyboardSize.height - kInputHeight, self.view.frame.size.width, kInputHeight);
 	[_sendButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
 	[UIView commitAnimations];
 }
@@ -197,8 +196,7 @@ CGFloat kInputHeight = 40.0f;
 	[UIView beginAnimations:@"beginEditing" context:_inputBackgroundView];
 	[UIView setAnimationCurve:animationCurve];
 	[UIView setAnimationDuration:animationDuration];
-	_tableView.contentInset = UIEdgeInsetsMake(4.0f, 0.0f, 0.0f, 0.0f);
-	_tableView.scrollIndicatorInsets = _tableView.contentInset;
+    self.tableView.frame = CGRectMake(0.0f, 0.0f, self.view.frame.size.width, self.view.frame.size.height - kInputHeight);
 	_inputBackgroundView.frame = CGRectMake(0.0f, _tableView.frame.size.height, self.view.frame.size.width, kInputHeight);
 	[_sendButton setTitleColor:[UIColor colorWithWhite:1.0f alpha:0.4f] forState:UIControlStateNormal];
 	[UIView commitAnimations];
